@@ -8,7 +8,7 @@ import (
 )
 
 // 获取一个医院的所有科室
-func GetDepartment(hosCode string) errror {
+func GetDepartment(hosCode string) error {
 	client := &http.Client{}
 
 	request, err :=
@@ -18,4 +18,6 @@ func GetDepartment(hosCode string) errror {
 		log.Println("err:", err)
 		return nil
 	}
+	req, err := client.Do(request)
+
 }

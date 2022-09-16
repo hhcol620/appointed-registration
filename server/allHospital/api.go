@@ -1,12 +1,14 @@
 package alladdress
 
 import (
-	"appointed-regidtration/helper"
+	"appointed-registration/helper"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type address struct {
@@ -19,12 +21,16 @@ type address struct {
 }
 
 // 获取医院相关数据
-func GetAddress() (map[string]address, error) {
+func GetAddress(levelId, pageNo int, areaId string) (map[string]address, error) {
 
 	result, arr := map[string]interface{}{}, map[string]address{}
 
 	client := &http.Client{}
-	request, err := http.NewRequest("GET", "https://www.114yygh.com/web/hospital/list?_time=1662970211457&keywords=&levelId=0&areaId=0&pageNo=1&pageSize=20", nil)
+
+	request, err := http.NewRequest("GET",
+		fmt.Sprintf("https://www.114yygh.com/web/hospital/list?_time=%v&keywords=&levelId=%v&areaId=%v&pageNo=%v&pageSize=20",
+			time.Now().UnixMilli(), levelId, areaId, pageNo), nil)
+
 	if err != nil {
 		log.Println("err:", err)
 		return nil, errors.New("err: " + err.Error())
@@ -37,6 +43,7 @@ func GetAddress() (map[string]address, error) {
 		log.Println("err:", err)
 		return nil, errors.New("err: " + err.Error())
 	}
+
 	cc, _ := ioutil.ReadAll(response.Body)
 
 	err = json.Unmarshal(cc, &result)

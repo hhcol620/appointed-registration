@@ -6,9 +6,9 @@ import (
 )
 
 func Test_GetAddress(t *testing.T) {
-	arr, err := GetAddress()
+	arr, err := GetAddress(3, 1, "110101")
 	if err != nil {
 		return
 	}
-	fmt.Println(len(arr))
+	fmt.Println(arr)
 }
