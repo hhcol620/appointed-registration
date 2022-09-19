@@ -1,7 +1,6 @@
 package login
 
 import (
-<<<<<<< HEAD
 	aess "appointed-registration/helper/aes"
 	"appointed-registration/helper/request"
 	"fmt"
@@ -20,6 +19,7 @@ import (
 // 		Code:   code,
 // 	}
 // }
+<<<<<<< HEAD
 =======
 	"appointed-registration/helper/request"
 	"fmt"
@@ -27,6 +27,11 @@ import (
 
 // 获取一个验证码时的设置的cookie
 func getImgCode() {
+=======
+
+// 获取一个验证码时的设置的cookie
+func GetImgCode() *http.Response {
+>>>>>>> 932dce4... 更新冲突
 	param := request.Params{
 		Headers: request.Headers{
 			"Accept":          "application/json, text/plain, */*",
@@ -49,6 +54,7 @@ func getImgCode() {
 	}
 	response, err := request.Get("https://www.114yygh.com/web/img/getImgCode?_time=1663165130980", param)
 	if err != nil {
+<<<<<<< HEAD
 		return
 	}
 	defer response.Response.Body.Close()
@@ -83,6 +89,8 @@ func GetImgCode() *http.Response {
 	}
 	response, err := request.Get("https://www.114yygh.com/web/img/getImgCode?_time=1663165130980", param)
 	if err != nil {
+=======
+>>>>>>> 932dce4... 更新冲突
 		return nil
 	}
 	defer response.Response.Body.Close()
@@ -154,8 +162,11 @@ func Login(mobile, code string) *http.Response {
 		return nil
 	}
 	return request.Response
+<<<<<<< HEAD
 =======
 >>>>>>> 99cc4cd... 封装请求方法
+=======
+>>>>>>> 932dce4... 更新冲突
 }
 
 // func Login(mobile, code string) {
