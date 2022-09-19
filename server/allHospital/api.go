@@ -21,7 +21,7 @@ type address struct {
 }
 
 // 获取医院相关数据
-func GetAddress(levelId, pageNo int, areaId string) (map[string]address, error) {
+func GetAddress(levelId int, areaId string, pageNo int) (map[string]address, error) {
 
 	result, arr := map[string]interface{}{}, map[string]address{}
 
@@ -54,6 +54,10 @@ func GetAddress(levelId, pageNo int, areaId string) (map[string]address, error) 
 
 	// 遍历所有的数据
 	for _, v := range result["data"].(map[string]interface{})["list"].([]interface{}) {
+
+		if v == nil {
+			return nil, errors.New("数据不能为空")
+		}
 
 		res := address{
 			code:         (v.(map[string]interface{}))["code"].(string),

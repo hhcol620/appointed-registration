@@ -44,7 +44,7 @@ func do(method string, url string, params Params) (r responses, e error) {
 	// 参数
 	addData(request, params.Data)
 	r.Response, e = http.DefaultClient.Do(request)
-	defer r.Response.Body.Close()
+	// defer r.Response.Body.Close()
 	if e != nil {
 		return
 	}
