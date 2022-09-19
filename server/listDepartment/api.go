@@ -1,17 +1,22 @@
 package listdepartment
 
 import (
+<<<<<<< HEAD
 	"appointed-registration/helper"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
+=======
+	"fmt"
+>>>>>>> 4359f34... 将医院信息以map发返回
 	"log"
 	"net/http"
 	"time"
 )
 
 // 获取一个医院的所有科室
+<<<<<<< HEAD
 func GetDepartment(hosCode string) (map[string][]ValueDepartment, map[string][]ValueDepartment, error) {
 
 	request, err := http.NewRequest("GET",
@@ -76,4 +81,16 @@ func formatArry(arr map[KeyDepartment][]ValueDepartment) (map[string][]ValueDepa
 		departmentCode[k.Code], departmentName[k.Name] = v, v
 	}
 	return departmentCode, departmentName
+=======
+func GetDepartment(hosCode string) errror {
+	client := &http.Client{}
+
+	request, err :=
+		http.NewRequest("GET",
+			fmt.Sprintf("https://www.114yygh.com/web/department/hos/list?_time=%v&hosCode=%v", time.Now().UnixMilli(), hosCode), nil)
+	if err != nil {
+		log.Println("err:", err)
+		return nil
+	}
+>>>>>>> 4359f34... 将医院信息以map发返回
 }

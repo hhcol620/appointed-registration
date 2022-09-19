@@ -43,7 +43,6 @@ func GetAddress(levelId int, areaId string, pageNo int) (map[string]address, err
 		log.Println("err:", err)
 		return nil, errors.New("err: " + err.Error())
 	}
-
 	cc, _ := ioutil.ReadAll(response.Body)
 
 	err = json.Unmarshal(cc, &result)
