@@ -9,10 +9,7 @@ import (
 
 // 测试请求登录界面
 func post() {
-	// params := url.Values{
-	// 	"mobile":   {"18088630924"},
-	// 	"password": {"12345678"},
-	// }
+
 	params := `{
 		"mobile":"18088630924",
 		"password":"12345678"
