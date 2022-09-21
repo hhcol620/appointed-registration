@@ -13,7 +13,7 @@ func SetHead(req *http.Request) {
 	req.Header.Set("sec-ch-ua", `"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"`)
 	req.Header.Set("sec-ch-ua-mobile", "?0")
 	req.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
-	req.Header.Set("Cookie", "imed_session=0B19QDlODoTooHBRi2GJWbLhCeJPZoyc_5543232; imed_session=8KRV3NGmTsB069EJYTOenqVZSrlGBkzW_5543228; secure-key=4d19ee26-38e6-45de-8aa0-e8497308c769; cmi-user-ticket=9nYFi5NiEogFZOChEYvxpNG4MTQUyUY_T22UuQ..; agent_login_img_code=9852e090938545ae900c20c0c585760d; imed_session=0B19QDlODoTooHBRi2GJWbLhCeJPZoyc_5543232; imed_session_tm=1662970188078")
+	req.Header.Set("Cookie", "med_session=rBJT3t7HbGuGOkCpgGJgYKCKYaMCgSe5_5545210; imed_session=rBJT3t7HbGuGOkCpgGJgYKCKYaMCgSe5_5545210; cmi-user-ticket=eH5tKKzbpePMlsGGTzYn61_CuvD-fJC28BjhGQ..; secure-key=4d4696a3-00fe-4e05-8fed-1d99838bf890; imed_session=UjsnaxifXHVj4qVNsrF3WL3xeQZIpEQB_5545243; agent_login_img_code=6b35f68e38004d3083047c0c383ee0f4; imed_session_tm=1663573193953")
 	// req.Header.Set("Cookie", cookie)
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
 	req.Header.Set("sec-ch-ua-platform", "Windows")

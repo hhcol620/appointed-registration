@@ -45,12 +45,7 @@ func do(method string, url string, params Params) (r responses, e error) {
 	addData(request, params.Data)
 	r.Response, e = http.DefaultClient.Do(request)
 	// defer r.Response.Body.Close()
-<<<<<<< HEAD
-=======
-	defer r.Response.Body.Close()
->>>>>>> 99cc4cd... 封装请求方法
-=======
->>>>>>> 932dce4... 更新冲突
+
 	if e != nil {
 		return
 	}
