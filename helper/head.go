@@ -20,6 +20,7 @@ func SetHead(req *http.Request) {
 	req.Header.Set("Sec-Fetch-Dest", "empty")
 	req.Header.Set("Sec-Fetch-Mode", "cors")
 	req.Header.Set("Sec-Fetch-Site", "same-origin")
+
 }
 
 func SetHeads(req *http.Request, cookie string) {
