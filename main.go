@@ -1,14 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"appointed-registration/dao"
+	"appointed-registration/initialize"
+)
 
 func main() {
-	// 通过传入数据医院,
-	params := fmt.Sprintf(`
-		{
-			"hostCode":%v, 
-
-		}
-`, "lll")
-	fmt.Println(params)
+	dao.InitMysql()
+	Router := initialize.Routers()
+	Router.Run(":8080")
 }

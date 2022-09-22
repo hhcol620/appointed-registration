@@ -1,0 +1,8 @@
+appointedRegistration: 
+  mysql: 
+    # 数据库的信息
+    username: root
+    password: 123456
+    port: 3306
+    ip: 127.0.0.1
+    database: appointedregistration

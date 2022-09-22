@@ -61,7 +61,19 @@ func generateKey(key []byte) (genKey []byte) {
 	decrypted := AesDecryptECB(encrypted, key)
 	log.Println("解密结果：", string(decrypted))
 */
+// 同时加密手机号码和手机验证码
 func AesECBPass(mobile, code string) (string, string) {
+
 	encryptedMobile, encryptedCode := aesEncryptECB([]byte(mobile), []byte(global.LoginKey)), aesEncryptECB([]byte(code), []byte(global.LoginKey))
+
 	return base64.StdEncoding.EncodeToString(encryptedMobile), base64.StdEncoding.EncodeToString(encryptedCode)
+
+}
+
+// 只加密手机号码
+func AesMobile(mobile string) string {
+
+	encryptedMobile := aesEncryptECB([]byte(mobile), []byte(global.LoginKey))
+
+	return base64.StdEncoding.EncodeToString(encryptedMobile)
 }
