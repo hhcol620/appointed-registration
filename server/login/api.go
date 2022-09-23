@@ -54,19 +54,7 @@ func getImgCode() {
 	out, _ := os.Create("vifyCode.png")
 	defer out.Close()
 	_, err = io.Copy(out, bytes.NewReader(cc))
-	// return response.Cookies()
-	// fmt.Printf("%T", response.Header["Set-Cookie"])
-	// 	0 secure-key=eb596aa1-1664-4dd4-aeae-2516fb334da3; Expires=Thu, 22-Sep-2022 14:44:14 GMT; Path=/; HttpOnly
-	// 1 agent_login_img_code=25940a3080334c2193f51849d7908ab0; Expires=Thu, 22-Sep-2022 14:44:14 GMT; Path=/; HttpOnly
-	// 2 imed_session=IaLpzrubspFsOg9uWUI1TDI9LvkQHOms_5546186; Domain=.114yygh.com; Path=/; HttpOnly
-	// 3 imed_session_tm=1663856054214; Domain=.114yygh.com; Path=/; HttpOnly
-	// 设置头部
-	// imed_session=HOP4uthe3Xfyi5HeCCL1iKvNSRL1dnYZ_5546181;
-	// secure-key=3dcf6176-8b83-4d8f-8be3-947565a4adfa;
-	// cmi-user-ticket=vauqiml33O-y3aPzwqRwZKAd-xuZPbDqvlFrWw..;
-	// imed_session=HOP4uthe3Xfyi5HeCCL1iKvNSRL1dnYZ_5546181;
-	// agent_login_img_code=d03729ab2bef42dfb56a4488bdf03c87;
-	// imed_session_tm=1663854607738
+
 	str = "tqBih5MhOSWMKEJVGMkdn2kRV0VyaCzJ_5546196; " +
 		solveSetCookie(response.Header["Set-Cookie"][0]) + cookie2 + "; " + "secure-key=35baa7d5-a68c-4c0b-b953-33ac7dcb478f; " +
 		solveSetCookie(response.Header["Set-Cookie"][2]) +
@@ -97,25 +85,23 @@ func CheckCode(code string) {
 
 	fmt.Println(string(cc))
 
-	fmt.Println("这是cookie", arr)
-	// str = response.Header["Set-Cookie"]
 }
 
 // 验证验证码 verfiyCode(手机号码和图形验证码)
-// func VerfiyCode(mobile, code string) {
+func VerfiyCode(mobile, code string) {
 
-// 	// 手机号码加密
-// 	mobileAes := aess.AesMobile(mobile)
+	// 手机号码加密
+	mobileAes := aess.AesMobile(mobile)
 
-// 	// 替换符号
-// 	mobileAesSwap := strings.ReplaceAll(mobileAes, "=", "%3D")
+	// 替换符号
+	mobileAesSwap := strings.ReplaceAll(mobileAes, "=", "%3D")
 
-// 	// 将加密的手机号码的 ` '=' 转换为 '%3D' `
-// 	resquest := v1.GetRequest(
-// 		fmt.Sprintf("https://www.114yygh.com/web/common/verify-code/get?_time=%v&mobile=%v&smsKey=LOGIN&code=%v", time.Now().UnixMilli(), mobileAesSwap, code))
+	// 将加密的手机号码的 ` '=' 转换为 '%3D' `
+	resquest := v1.GetRequest(
+		fmt.Sprintf("https://www.114yygh.com/web/common/verify-code/get?_time=%v&mobile=%v&smsKey=LOGIN&code=%v", time.Now().UnixMilli(), mobileAesSwap, code))
 
-// 	// 设置用户的头部信息
-// }
+	// 设置用户的头部信息
+}
 
 // 实现登录(手机号码和短信验证码)
 func Login(mobile, code string) (*http.Response, error) {

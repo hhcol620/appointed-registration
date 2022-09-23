@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/garyburd/redigo/redis"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -23,10 +24,14 @@ func InitMysql() {
 	// 线上
 	dsn := config.AppointedRegistration.MysqlConfig.Username + ":" + config.AppointedRegistration.MysqlConfig.Password + "@tcp(" +
 		config.AppointedRegistration.MysqlConfig.IP + ":" + config.AppointedRegistration.MysqlConfig.Port + ")/" + config.AppointedRegistration.MysqlConfig.Database + "?charset=utf8mb4&parseTime=True&loc=Local"
-	// 线下
-	// dsn := "root:123456@tcp(127.0.0.1:3306)/gin_wall?charset=utf8mb4&parseTime=True&loc=Local"
-	//全局模式
 
+	//  redis连接
+	c, err := redis.Dial("tcp", "127.0.0.1:6379")
+	if err != nil {
+		fmt.Println("Connect to redis error", err)
+		return
+	}
+	defer c.Close()
 	DB, err = gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		log.Println("连接数据库失败")
