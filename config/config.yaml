@@ -6,3 +6,7 @@ appointedRegistration:
     port: 3306
     ip: 127.0.0.1
     database: appointedregistration
+  
+  redis: 
+    port: 2379
+    ip: 127.0.0.1
