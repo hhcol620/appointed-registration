@@ -2,17 +2,16 @@ package dao
 
 import (
 	"appointed-registration/config"
-	"fmt"
+	"appointed-registration/global"
 	"log"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var (
-	DB      *gorm.DB
-	RedisDb redis.Conn
+	DB *gorm.DB
 )
 
 func InitMysql() {
@@ -32,12 +31,10 @@ func InitMysql() {
 		log.Println("连接数据库失败")
 		return
 	}
-
-	RedisDb, err = redis.Dial("tcp", "127.0.0.1:6379")
-	if err != nil {
-		fmt.Println("Connect to redis error", err)
-		return
-	}
-
-	fmt.Println("连接成功")
+	global.RedisDb = redis.NewClient(&redis.Options{
+		Addr:     "127.0.0.1:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+		Network:  "tcp",
+	})
 }

@@ -49,7 +49,7 @@ type mou struct {
 }
 
 // 传入医院的所有的数据进行查询
-func Check(hasCode, firstDeptCode, secondDeptCode string) {
+func Check(hasCode, firstDeptCode, secondDeptCode, cookieStr string) {
 	// 通过传入数据医院,
 
 	params := mou{
@@ -64,7 +64,7 @@ func Check(hasCode, firstDeptCode, secondDeptCode string) {
 		return
 	}
 	// fmt.Println(string(param))
-	request := v1.PostRequest("https://www.114yygh.com/web/product/list?_time=1663920385245", string(param))
+	request := v1.PostRequest(fmt.Sprintf("https://www.114yygh.com/web/product/list?_time=%v", time.Now().UnixMilli()), string(param))
 
 	// request.Header.Add("Content-Type", "application/json")
 	// helper.SetRegisteredHead(request)
@@ -73,7 +73,7 @@ func Check(hasCode, firstDeptCode, secondDeptCode string) {
 	request.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
 	request.Header.Set("Connection", "keep-alive")
 	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
-	request.Header.Set("Cookie", "imed_session=OWuwDUZhOtU1Me2Mx2v0Rzb4JE57zKZm_5546400; secure-key=d0d5cc25-619b-4d08-9cd6-c7d2c97de66a; imed_session=OWuwDUZhOtU1Me2Mx2v0Rzb4JE57zKZm_5546400; agent_login_img_code=f4a744d1dbdd4255a9c08accbe618b6c; cmi-user-ticket=zwAYVjg8QMKiN0GNRZuSq08nhd5H-rjRwFjqgA..; imed_session_tm=1663920380957")
+	request.Header.Set("Cookie", cookieStr)
 	request.Header.Set("Host", "www.114yygh.com")
 	request.Header.Set("Origin", "https://www.114yygh.com")
 	request.Header.Set("Referer", "https://www.114yygh.com/hospital/146/5072ec36c845e36c95d59606f2451089/200087753/source")
@@ -86,7 +86,7 @@ func Check(hasCode, firstDeptCode, secondDeptCode string) {
 	request.Header.Set("Sec-Fetch-Mode", "cors")
 	request.Header.Set("Sec-Fetch-Site", "same-origin")
 	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
-	// request.Header.Add("Cookie", "cmi-user-ticket=e0XeBg4Cp_d_Ya4sAWRAWOR_r6XYbm3_tEPXiA..; Domain=.114yygh.com; Expires=Mon, 09-Oct-2090 16:53:40 GMT; Path=/; HttpOnly; imed_session=uPb6UyObagj6qr6NESLYRc3hGE8uHXqw_5545891; HttpOnly; imed_session_tm=1663767573078; Domain=.114yygh.com; Path=/; HttpOnly")
+
 	client := &http.Client{}
 
 	response, err := client.Do(request)

@@ -16,14 +16,6 @@ import (
 
 func GetDepartment(hosCode string) (map[string][]ValueDepartment, map[string][]ValueDepartment, error) {
 
-	// request, err := http.NewRequest("GET",
-	// 	fmt.Sprintf("https://www.114yygh.com/web/department/hos/list?_time=%v&hosCode=%v",
-	// 		time.Now().UnixMilli(), hosCode), nil)
-
-	// if err != nil {
-	// 	log.Println("err:", err)
-	// 	return nil, nil, errors.New("err: " + err.Error())
-	// }
 	request := v1.GetRequest(fmt.Sprintf("https://www.114yygh.com/web/department/hos/list?_time=%v&hosCode=%v",
 		time.Now().UnixMilli(), hosCode))
 
