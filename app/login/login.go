@@ -2,6 +2,11 @@ package login
 
 import (
 	"appointed-registration/app/models"
+	"appointed-registration/global"
+	"appointed-registration/helper/response"
+	v1 "appointed-registration/server"
+	"appointed-registration/server/login"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,20 +16,88 @@ import (
 * 作者:小大白兔
 * 创建时间:2022/09/26 22:13:33
  */
-func GetImgCode(c *gin.Context) {
+func GetImgCode(ctx *gin.Context) {
 	getMobile := &models.GetImgCode{}
 
-	if err := c.ShouldBindJSON(getMobile); err != nil {
+	if err := ctx.ShouldBindJSON(getMobile); err != nil {
+
+		response.ErrClient(ctx, 400, err.Error())
+		return
 
 	}
+
+	server := v1.NewServers(login.Login{
+		Mobile: getMobile.Mobile,
+	})
+
+	global.Phone = getMobile.Mobile
+
+	err := server.GetImgCode()
+	if err != nil {
+		log.Println("获取失败: ", err)
+		return
+	}
+
+	response.ReturnSuccess(ctx)
 }
 
-// 登录 (手机号码的获取)
-func GetMobile(c *gin.Context) {
+/**
+* 代码描述:手机验证码发送
+* 作者:小大白兔
+* 创建时间:2022/09/28 20:33:09
+ */
+func SendMobileCode(c *gin.Context) {
 
+	getCode := &models.GetCode{}
+
+	if err := c.ShouldBindJSON(getCode); err != nil {
+
+		response.ErrClient(c, 400, err.Error())
+		return
+
+	}
+
+	server := v1.NewServers(login.Login{
+		Mobile: global.Phone,
+	})
+
+	if err := server.GetMobileCode(getCode.Code); err != nil {
+
+		response.ErrServer(c, 500, err.Error())
+		return
+
+	}
+
+	// 发送成功
+	response.ReturnSuccess(c)
 }
 
-// 登录 (手机验证码的获取)
-func GetCode(c *gin.Context) {
+/**
+* 代码描述: 实现登录
+* 作者:小大白兔
+* 创建时间:2022/09/28 21:14:24
+ */
+func Login(c *gin.Context) {
 
+	getCode := &models.GetCode{}
+
+	if err := c.ShouldBindJSON(getCode); err != nil {
+
+		response.ErrClient(c, 400, err.Error())
+		return
+
+	}
+
+	server := v1.NewServers(login.Login{
+		Mobile: global.Phone,
+	})
+
+	if err := server.GetLogin(getCode.Code); err != nil {
+
+		response.ErrServer(c, 500, err.Error())
+		return
+	}
+
+	// 发送成功
+	response.ReturnSuccess(c)
 }

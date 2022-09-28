@@ -34,3 +34,8 @@ func post() {
 	fmt.Println("这是结果", string(dd))
 
 }
+
+//  imed_session=hLsrHr69SmsDJZz6Ttyo7al7j9BT3A5p_5546737;
+// cmi-user-ticket=cBNe_5tnP3O8t-jnHGm6ZW1DuTf_yc4n0yXaLg..;
+
+//  imed_session_tm=1664371544677

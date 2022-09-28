@@ -13,7 +13,7 @@ import (
  */
 
 // 带参数返回
-func ReturnWithData(c gin.Context, httpCode int, data interface{}) {
+func ReturnWithData(c *gin.Context, httpCode int, data interface{}) {
 	c.JSON(httpCode, gin.H{
 		"code": httpCode,
 		"data": data,
@@ -21,7 +21,7 @@ func ReturnWithData(c gin.Context, httpCode int, data interface{}) {
 }
 
 // 4** 客户端的错误
-func ErrClient(c gin.Context, httpCode int, msg string) {
+func ErrClient(c *gin.Context, httpCode int, msg string) {
 	c.JSON(httpCode, gin.H{
 		"code":    httpCode,
 		"success": "false",

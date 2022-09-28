@@ -11,4 +11,6 @@ var (
 
 	RedisDb *redis.Client
 	Ctx     = context.Background()
+	// 手机号码
+	Phone = ""
 )

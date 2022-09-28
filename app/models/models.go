@@ -5,10 +5,9 @@ type GetImgCode struct {
 	Mobile string `form:"mobile" json:"mobile" binding:"required"`
 }
 
-// 获取输入的图片验证码
-type GetMobile struct {
-	Mobile string
-	Code   string
+// 获取验证码和手机号码
+type GetCode struct {
+	Code string
 }
 
 // swagger 接口文档
