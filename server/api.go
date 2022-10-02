@@ -1,6 +1,7 @@
 package server
 
 import (
+	allhospital "appointed-registration/server/allHospital"
 	"appointed-registration/server/login"
 	"bytes"
 	"errors"
@@ -9,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 type Server struct {
@@ -85,5 +87,39 @@ func (s *Server) GetLogin(code string) error {
 
 	}
 
+	return nil
+}
+
+/**
+* 代码描述: 所有医院的获取
+* 作者:小大白兔
+* 创建时间:2022/10/01 22:44:31
+ */
+func GetAllHostpital() error {
+	// for i := 1; ; i++ {
+	// 	dd, err := allhospital.GetAddress(0, "0", i)
+	// 	if err != nil {
+	// 		return errors.New("错误: " + err.Error())
+	// 	}
+	// 	if strings.Contains(dd, "resCode:0") {
+	// 		break
+	// 	}
+	// 	fmt.Println(dd)
+	// 	// time.Sleep(2 * time.Second)
+	// }
+	// fmt.Println("显然结束了")
+	// return nil
+	for i := 1; ; i++ {
+		dd, err := allhospital.GetAddress(0, "0", i)
+		if err != nil {
+			return errors.New("错误: " + err.Error())
+		}
+		if strings.Contains(dd, "[]") {
+			break
+		}
+		fmt.Println(dd)
+		// time.Sleep(2 * time.Second)
+	}
+	fmt.Println("显然结束了")
 	return nil
 }

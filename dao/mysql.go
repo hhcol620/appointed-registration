@@ -3,6 +3,7 @@ package dao
 import (
 	"appointed-registration/config"
 	"appointed-registration/global"
+	"appointed-registration/models/address"
 	"log"
 
 	"github.com/go-redis/redis/v8"
@@ -31,6 +32,13 @@ func InitMysql() {
 		log.Println("连接数据库失败")
 		return
 	}
+
+	// 数据库映射
+	DB.AutoMigrate(
+		&address.AllAddress{},
+		&address.AllGrade{},
+	)
+
 	global.RedisDb = redis.NewClient(&redis.Options{
 		Addr:     "127.0.0.1:6379",
 		Password: "", // no password set

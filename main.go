@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+
 	dao.InitMysql()
 	Router := initialize.Routers()
 	Router.Run(":8081")

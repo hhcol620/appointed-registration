@@ -135,7 +135,6 @@ func (l *Login) VerfiyCode(code string) error {
 	// 设置用户的头部信息
 	request.Header.Set("Cookie", cookieStr)
 	request.Header.Set("Content-Type", "application/json")
-
 	request.Header.Set("Request-Source", "PC")
 	request.Header.Set("Accept", "application/json, text/plain, */*")
 	request.Header.Set("Accept-Encoding", "gzip, deflate, br")
@@ -165,8 +164,15 @@ func (l *Login) VerfiyCode(code string) error {
 		log.Println("存放数据失败: ", err)
 		return errors.New("存放数据失败: " + err.Error())
 	}
+
 	dd, _ := ioutil.ReadAll(response.Body)
-	fmt.Println(string(dd))
+
+	if ok := strings.Contains(string(dd), "null"); ok {
+		// 证明登录失败
+		log.Println("verfiyCode 失败")
+		return errors.New("验证码验证失败")
+	}
+
 	return nil
 }
 

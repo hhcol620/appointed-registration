@@ -1,8 +1,7 @@
-package alladdress
+package allhospital
 
 import (
 	"appointed-registration/helper"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -21,9 +20,9 @@ type address struct {
 }
 
 // 获取医院相关数据
-func GetAddress(levelId int, areaId string, pageNo int) (map[string]address, error) {
+func GetAddress(levelId int, areaId string, pageNo int) (string, error) {
 
-	result, arr := map[string]interface{}{}, map[string]address{}
+	// result := map[string]interface{}{}
 
 	client := &http.Client{}
 
@@ -33,7 +32,7 @@ func GetAddress(levelId int, areaId string, pageNo int) (map[string]address, err
 
 	if err != nil {
 		log.Println("err:", err)
-		return nil, errors.New("err: " + err.Error())
+		return "", errors.New("err: " + err.Error())
 	}
 
 	helper.SetHead(request)
@@ -41,35 +40,16 @@ func GetAddress(levelId int, areaId string, pageNo int) (map[string]address, err
 	response, err := client.Do(request)
 	if err != nil {
 		log.Println("err:", err)
-		return nil, errors.New("err: " + err.Error())
+		return "", errors.New("err: " + err.Error())
 	}
 
 	cc, _ := ioutil.ReadAll(response.Body)
+	return string(cc), nil
+	// err = json.Unmarshal(cc, &result)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return nil, errors.New("err: " + err.Error())
+	// }
+	// return result, nil
 
-	err = json.Unmarshal(cc, &result)
-	if err != nil {
-		log.Println(err)
-		return nil, errors.New("err: " + err.Error())
-	}
-
-	// 遍历所有的数据
-	for _, v := range result["data"].(map[string]interface{})["list"].([]interface{}) {
-
-		if v == nil {
-			return nil, errors.New("数据不能为空")
-		}
-
-		res := address{
-			code:         (v.(map[string]interface{}))["code"].(string),
-			levelText:    (v.(map[string]interface{}))["levelText"].(string),
-			maintain:     (v.(map[string]interface{}))["maintain"].(bool),
-			name:         (v.(map[string]interface{}))["name"].(string),
-			openTimeText: (v.(map[string]interface{}))["openTimeText"].(string),
-			picture:      (v.(map[string]interface{}))["picture"].(string),
-		}
-
-		arr[(v.(map[string]interface{}))["name"].(string)] = res
-	}
-
-	return arr, nil
 }

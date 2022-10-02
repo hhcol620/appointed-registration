@@ -1,5 +1,11 @@
 package listaddress
 
+import (
+	"appointed-registration/dao"
+	"appointed-registration/models/address"
+	"fmt"
+)
+
 // 各个行政去代号
 var AllAddressKey = map[string]string{
 	"0":      "全部",
@@ -51,4 +57,33 @@ var AllGradeValue = map[string]int{
 	"一级医院": 1,
 	"二级医院": 2,
 	"三级医院": 3,
+}
+
+/**
+* 代码描述: 行政区数据的插入和医院级别的数据插入
+* 作者:小大白兔
+* 创建时间:2022/10/01 21:59:32
+ */
+func InsertAddressAndGrade() {
+	addresses, addressGrade := []address.AllAddress{}, []address.AllGrade{}
+
+	for k, v := range AllAddressKey {
+		a := address.AllAddress{
+			AddressCode:  k,
+			AddressValue: v,
+		}
+		addresses = append(addresses, a)
+	}
+
+	for k, v := range AllGradeKey {
+		a := address.AllGrade{
+			GradeCode:  uint(k),
+			GradeValue: v,
+		}
+		addressGrade = append(addressGrade, a)
+	}
+	fmt.Println(addressGrade, addresses)
+	dao.DB.Create(&addresses)
+
+	dao.DB.Create(&addressGrade)
 }

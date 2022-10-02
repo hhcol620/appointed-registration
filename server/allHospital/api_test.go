@@ -1,4 +1,4 @@
-package alladdress
+package allhospital
 
 import (
 	"fmt"
