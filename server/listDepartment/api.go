@@ -12,12 +12,15 @@ import (
 	"time"
 )
 
-// 获取一个医院的所有科室
+type HostCode struct {
+	HosCode string
+}
 
-func GetDepartment(hosCode string) (map[string][]ValueDepartment, map[string][]ValueDepartment, error) {
+// 获取一个医院的所有科室
+func (h *HostCode) GetDepartment() (map[string][]ValueDepartment, map[string][]ValueDepartment, error) {
 
 	request := v1.GetRequest(fmt.Sprintf("https://www.114yygh.com/web/department/hos/list?_time=%v&hosCode=%v",
-		time.Now().UnixMilli(), hosCode))
+		time.Now().UnixMilli(), h.HosCode))
 
 	helper.SetHead(request)
 	// defer request.Body.Close()
@@ -72,4 +75,23 @@ func formatArry(arr map[KeyDepartment][]ValueDepartment) (map[string][]ValueDepa
 		departmentCode[k.Code], departmentName[k.Name] = v, v
 	}
 	return departmentCode, departmentName
+}
+
+func (h *HostCode) GetDepartmentFront() (*http.Response, error) {
+
+	request := v1.GetRequest(fmt.Sprintf("https://www.114yygh.com/web/department/hos/list?_time=%v&hosCode=%v",
+		time.Now().UnixMilli(), h.HosCode))
+
+	helper.SetHead(request)
+	// defer request.Body.Close()
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		log.Println("err:", err)
+		return nil, errors.New("err: " + err.Error())
+	}
+
+	return response, nil
+
 }
