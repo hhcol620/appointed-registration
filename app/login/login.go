@@ -20,7 +20,7 @@ func GetImgCode(ctx *gin.Context) {
 	getMobile := &models.GetImgCode{}
 
 	if err := ctx.ShouldBindJSON(getMobile); err != nil {
-
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		response.ErrClient(ctx, 400, err.Error())
 		return
 
@@ -33,7 +33,9 @@ func GetImgCode(ctx *gin.Context) {
 	global.Phone = getMobile.Mobile
 
 	err := server.GetImgCode()
+
 	if err != nil {
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		log.Println("获取失败: ", err)
 		return
 	}
@@ -51,7 +53,7 @@ func SendMobileCode(c *gin.Context) {
 	getCode := &models.GetCode{}
 
 	if err := c.ShouldBindJSON(getCode); err != nil {
-
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		response.ErrClient(c, 400, err.Error())
 		return
 
@@ -62,7 +64,7 @@ func SendMobileCode(c *gin.Context) {
 	})
 
 	if err := server.GetMobileCode(getCode.Code); err != nil {
-
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		response.ErrServer(c, 500, err.Error())
 		return
 
@@ -82,7 +84,7 @@ func Login(c *gin.Context) {
 	getCode := &models.GetCode{}
 
 	if err := c.ShouldBindJSON(getCode); err != nil {
-
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		response.ErrClient(c, 400, err.Error())
 		return
 
@@ -93,7 +95,7 @@ func Login(c *gin.Context) {
 	})
 
 	if err := server.GetLogin(getCode.Code); err != nil {
-
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		response.ErrServer(c, 500, err.Error())
 		return
 	}

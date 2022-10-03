@@ -7,7 +7,12 @@ type GetImgCode struct {
 
 // 获取验证码和手机号码
 type GetCode struct {
-	Code string
+	Code string `form:"code" json:"code" binding:"required"`
+}
+
+// 获取某个医院的科室
+type GetHostpitalCode struct {
+	HostpitalCode string `form:"hostpitalCode" json:"hostpitalCode" binding:"required"`
 }
 
 // swagger 接口文档

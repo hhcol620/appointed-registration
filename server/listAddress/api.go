@@ -65,6 +65,7 @@ var AllGradeValue = map[string]int{
 * 创建时间:2022/10/01 21:59:32
  */
 func InsertAddressAndGrade() {
+
 	addresses, addressGrade := []address.AllAddress{}, []address.AllGrade{}
 
 	for k, v := range AllAddressKey {

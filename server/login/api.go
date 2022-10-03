@@ -11,11 +11,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
-
-	"github.com/golang/glog"
 )
 
 // 用于登录是信息的加密
@@ -35,11 +32,13 @@ var (
 // 获取图片验证码
 func (l *Login) GetImgCode() (*http.Response, error) {
 
+	global.LogSuger.Info("开始获取图片验证码接口...")
+
 	request, err := http.NewRequest("GET",
 		fmt.Sprintf("https://www.114yygh.com/web/img/getImgCode?_time=%v", time.Now().UnixMilli()), nil)
 
 	if err != nil {
-		log.Println()
+		global.LogSuger.Errorf("请求失败: " + err.Error())
 		return nil, err
 	}
 
@@ -50,7 +49,7 @@ func (l *Login) GetImgCode() (*http.Response, error) {
 
 	response, err := client.Do(request)
 	if err != nil {
-		log.Println("响应失败: ", err)
+		global.LogSuger.Errorf("响应失败: " + err.Error())
 		return nil, err
 	}
 
@@ -63,9 +62,11 @@ func (l *Login) GetImgCode() (*http.Response, error) {
 	// 将数据存储到数据库
 	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("checkCode:%v", l.Mobile), str, time.Hour*24*7).Result()
 	if err != nil {
-		log.Println("getCode 储存数据失败: ", err)
+		global.LogSuger.Errorf("cookie 储存失败: " + err.Error())
 		return nil, err
 	}
+
+	global.LogSuger.Info("获取图片验证码接口失败...")
 
 	return response, nil
 }
@@ -73,18 +74,20 @@ func (l *Login) GetImgCode() (*http.Response, error) {
 // checkCode, 检验验证码(解决)
 func (l *Login) CheckCode(code string) error {
 
+	global.LogSuger.Info("CheckCode 接口请求开始...")
+
 	request, err := http.NewRequest("GET",
 		fmt.Sprintf("https://www.114yygh.com/web/checkcode?_time=%v&code=%v", time.Now().UnixMilli(), code), nil)
 
 	if err != nil {
-		log.Println("发请求失败: " + err.Error())
+		global.LogSuger.Errorf("发送请求失败: " + err.Error())
 		return errors.New("发请求失败: " + err.Error())
 	}
 
 	// 获取需要的cookie
 	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("checkCode:%v", l.Mobile)).Result()
 	if err != nil {
-		glog.Error("获取cookie失败")
+		global.LogSuger.Errorf("获取cookie失败: " + err.Error())
 		return errors.New("获取cookie失败" + err.Error())
 	}
 
@@ -105,15 +108,19 @@ func (l *Login) CheckCode(code string) error {
 	// 存放
 	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("verfiyCode:%v", l.Mobile), str, time.Hour*7*24).Result()
 	if err != nil {
-		log.Println("存放数据失败: ", err)
+		global.LogSuger.Errorf("存放数据失败: " + err.Error())
 		return errors.New("存放数据失败: " + err.Error())
 	}
+
+	global.LogSuger.Info("CheckCode 接口请求结束...")
 
 	return nil
 }
 
 // 验证验证码 verfiyCode(手机号码和图形验证码)
 func (l *Login) VerfiyCode(code string) error {
+
+	global.LogSuger.Info("VerfiyCode 接口请求开始...")
 
 	// 手机号码加密
 	mobileAes := aess.AesMobile(l.Mobile)
@@ -128,7 +135,7 @@ func (l *Login) VerfiyCode(code string) error {
 	// 获取所需的cookie
 	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("verfiyCode:%v", l.Mobile)).Result()
 	if err != nil {
-		log.Println("获取数据失败: ", err)
+		global.LogSuger.Errorf("获取cookie数据失败: " + err.Error())
 		return errors.New("获取数据失败" + err.Error())
 	}
 
@@ -153,7 +160,7 @@ func (l *Login) VerfiyCode(code string) error {
 
 	response, err := client.Do(request)
 	if err != nil {
-		log.Println("响应失败: ", err)
+		global.LogSuger.Errorf("响应失败: " + err.Error())
 		return errors.New("响应失败: " + err.Error())
 	}
 
@@ -161,23 +168,30 @@ func (l *Login) VerfiyCode(code string) error {
 	// 存放
 	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("login:%v", l.Mobile), str, time.Hour*7*24).Result()
 	if err != nil {
-		log.Println("存放数据失败: ", err)
+		global.LogSuger.Errorf("cookie 储存失败: " + err.Error())
 		return errors.New("存放数据失败: " + err.Error())
 	}
 
 	dd, _ := ioutil.ReadAll(response.Body)
 
-	if ok := strings.Contains(string(dd), "null"); ok {
+	fmt.Println(string(dd))
+
+	if ok := strings.Contains(string(dd), "endMilliseconds"); !ok {
 		// 证明登录失败
-		log.Println("verfiyCode 失败")
+		global.LogSuger.Errorf("验证码失败")
 		return errors.New("验证码验证失败")
 	}
+
+	global.LogSuger.Info("VerfiyCode 接口请求结束...")
 
 	return nil
 }
 
 // 实现登录(手机号码和短信验证码)
 func (l *Login) Login(code string) error {
+
+	global.LogSuger.Info("login 接口请求开始...")
+
 	// 实现加密
 	mobileAes, codeAes := aess.AesECBPass(l.Mobile, code)
 
@@ -188,7 +202,7 @@ func (l *Login) Login(code string) error {
 
 	param, err := json.Marshal(loginBody)
 	if err != nil {
-		log.Println("json 解析失败: ", err)
+		global.LogSuger.Errorf("解析失败: " + err.Error())
 		return errors.New("解析失败: " + err.Error())
 	}
 
@@ -197,9 +211,10 @@ func (l *Login) Login(code string) error {
 	// 获取所需的cookie
 	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("login:%v", l.Mobile)).Result()
 	if err != nil {
-		log.Println("获取数据失败: ", err)
+		global.LogSuger.Errorf("获取cookie数据失败: " + err.Error())
 		return errors.New("获取数据失败" + err.Error())
 	}
+
 	request.Header.Set("Cookie", cookieStr)
 	request.Header.Set("Content-Type", "application/json")
 	helper.SetHead(request)
@@ -208,7 +223,7 @@ func (l *Login) Login(code string) error {
 
 	response, err := client.Do(request)
 	if err != nil {
-		log.Println("响应错误: ", err)
+		global.LogSuger.Errorf("响应失败: " + err.Error())
 		return errors.New("响应失败: " + err.Error())
 	}
 
@@ -217,9 +232,11 @@ func (l *Login) Login(code string) error {
 	// 存放
 	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("register:%v", l.Mobile), str, time.Hour*7*24).Result()
 	if err != nil {
-		log.Println("存放数据失败: ", err)
+		global.LogSuger.Errorf("存放cookie失败: " + err.Error())
 		return errors.New("存放数据失败: " + err.Error())
 	}
+
+	global.LogSuger.Info("login 接口请求结束...")
 
 	return nil
 }

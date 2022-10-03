@@ -2,6 +2,7 @@ package router
 
 import (
 	"appointed-registration/app/allhospital"
+	"appointed-registration/app/listdepartment"
 	"appointed-registration/app/login"
 
 	"github.com/gin-gonic/gin"
@@ -20,5 +21,11 @@ func InitUserRouter(Router *gin.RouterGroup) {
 	allHospitalss := Router.Group("hospital")
 	{
 		allHospitalss.GET("", allhospital.GetAllHostpitals)
+	}
+
+	// 一个医院的科室
+	allDepartment := Router.Group("department")
+	{
+		allDepartment.POST("", listdepartment.ListDepartment)
 	}
 }

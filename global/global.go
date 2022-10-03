@@ -4,13 +4,16 @@ import (
 	"context"
 
 	"github.com/go-redis/redis/v8"
+	"go.uber.org/zap"
 )
 
 var (
-	LoginKey = "imed2019imed2019"
+	LoginKey = "imed2019imed2019" // 加密方式
 
-	RedisDb *redis.Client
-	Ctx     = context.Background()
+	RedisDb  *redis.Client
+	LogSuger *zap.SugaredLogger
+
+	Ctx = context.Background()
 	// 手机号码
 	Phone = ""
 )

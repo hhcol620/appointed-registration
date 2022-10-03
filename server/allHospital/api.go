@@ -1,11 +1,11 @@
 package allhospital
 
 import (
+	"appointed-registration/global"
 	"appointed-registration/helper"
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
@@ -22,7 +22,7 @@ type address struct {
 // 获取医院相关数据
 func GetAddress(levelId int, areaId string, pageNo int) (string, error) {
 
-	// result := map[string]interface{}{}
+	global.LogSuger.Info("GetAddress 接口请求开始...")
 
 	client := &http.Client{}
 
@@ -31,25 +31,22 @@ func GetAddress(levelId int, areaId string, pageNo int) (string, error) {
 			time.Now().UnixMilli(), levelId, areaId, pageNo), nil)
 
 	if err != nil {
-		log.Println("err:", err)
-		return "", errors.New("err: " + err.Error())
+		global.LogSuger.Errorf("请求失败: " + err.Error())
+		return "", errors.New("请求失败: " + err.Error())
 	}
 
 	helper.SetHead(request)
 
 	response, err := client.Do(request)
 	if err != nil {
-		log.Println("err:", err)
-		return "", errors.New("err: " + err.Error())
+		global.LogSuger.Info("响应失败: " + err.Error())
+		return "", errors.New("响应失败: " + err.Error())
 	}
 
 	cc, _ := ioutil.ReadAll(response.Body)
+
+	global.LogSuger.Info("GetAddress 接口请求结束...")
+
 	return string(cc), nil
-	// err = json.Unmarshal(cc, &result)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return nil, errors.New("err: " + err.Error())
-	// }
-	// return result, nil
 
 }

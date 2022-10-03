@@ -34,6 +34,7 @@ func NewServers(apiLogin login.Login) *Server {
 func (s *Server) GetImgCode() error {
 	response, err := s.ApiLogin.GetImgCode()
 	if err != nil {
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		log.Println("响应失败: ", err)
 		return errors.New("响应失败: " + err.Error())
 	}
@@ -45,6 +46,7 @@ func (s *Server) GetImgCode() error {
 
 	_, err = io.Copy(out, bytes.NewReader(cc))
 	if err != nil {
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		log.Println("copy失败: ", err)
 		return errors.New("copys失败: " + err.Error())
 	}
@@ -61,12 +63,14 @@ func (s *Server) GetMobileCode(code string) error {
 
 	err := s.ApiLogin.CheckCode(code)
 	if err != nil {
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		log.Println("验证图片验证码失败: ", err)
 		return err
 	}
 
 	err = s.ApiLogin.VerfiyCode(code)
 	if err != nil {
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		log.Println("验证图片验证码失败: ", err)
 		return err
 	}
@@ -84,7 +88,7 @@ func (s *Server) GetLogin(code string) error {
 
 	// 实现登录
 	if err := s.ApiLogin.Login(code); err != nil {
-
+		log.SetFlags(log.Lshortfile | log.LstdFlags)
 		log.Println("登录失败")
 		return err
 

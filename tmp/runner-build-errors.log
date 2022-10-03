@@ -1,4 +1,0 @@
-# appointed-registration/server
-server\api.go:146:2: not enough arguments to return
-	have ()
-	want (map[string]interface {}, error)
