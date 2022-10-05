@@ -1,6 +1,7 @@
 package server
 
 import (
+	"appointed-registration/global"
 	allhospital "appointed-registration/server/allHospital"
 	listdepartment "appointed-registration/server/listDepartment"
 	"appointed-registration/server/login"
@@ -12,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -32,24 +34,30 @@ func NewServers(apiLogin login.Login) *Server {
 * 创建时间:2022/09/26 22:12:47
  */
 func (s *Server) GetImgCode() error {
+	global.LogSuger.Info("GetImgCode 开始执行...")
+
 	response, err := s.ApiLogin.GetImgCode()
 	if err != nil {
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
-		log.Println("响应失败: ", err)
+
+		global.LogSuger.Errorf("响应失败: " + err.Error())
 		return errors.New("响应失败: " + err.Error())
+
 	}
 
 	cc, _ := ioutil.ReadAll(response.Body)
 
-	out, _ := os.Create(fmt.Sprintf("%v.jpg", s.ApiLogin.Mobile))
+	name := path.Join("mobile", fmt.Sprintf("%v.jpg", s.ApiLogin.Mobile))
+
+	out, _ := os.Create(name)
 	defer out.Close()
 
 	_, err = io.Copy(out, bytes.NewReader(cc))
 	if err != nil {
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
-		log.Println("copy失败: ", err)
+		global.LogSuger.Errorf("copys失败: " + err.Error())
 		return errors.New("copys失败: " + err.Error())
 	}
+
+	global.LogSuger.Info("GetImgCode 执行结束...")
 
 	return nil
 }
@@ -75,7 +83,6 @@ func (s *Server) GetMobileCode(code string) error {
 		return err
 	}
 
-	// 返回没有错误信息
 	return nil
 }
 

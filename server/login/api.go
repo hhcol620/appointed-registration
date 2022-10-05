@@ -66,7 +66,7 @@ func (l *Login) GetImgCode() (*http.Response, error) {
 		return nil, err
 	}
 
-	global.LogSuger.Info("获取图片验证码接口失败...")
+	global.LogSuger.Info("获取图片验证码接口结束...")
 
 	return response, nil
 }

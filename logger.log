@@ -1,1 +1,6 @@
-{"level":"info","ts":1664805126.5250103,"caller":"login/api.go:38","msg":"开始获取图片验证码接口..."}
+{"level":"info","ts":1664855633.2273638,"caller":"login/api.go:35","msg":"开始获取图片验证码接口..."}
+{"level":"info","ts":1664855633.7117267,"caller":"login/api.go:69","msg":"获取图片验证码接口结束..."}
+{"level":"info","ts":1664855708.423936,"caller":"login/api.go:35","msg":"开始获取图片验证码接口..."}
+{"level":"info","ts":1664855708.7113805,"caller":"login/api.go:69","msg":"获取图片验证码接口结束..."}
+{"level":"info","ts":1664855768.435832,"caller":"login/api.go:35","msg":"开始获取图片验证码接口..."}
+{"level":"info","ts":1664855768.8621376,"caller":"login/api.go:69","msg":"获取图片验证码接口结束..."}
