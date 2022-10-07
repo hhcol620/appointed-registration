@@ -1,7 +1,10 @@
 package server
 
 import (
+	"appointed-registration/dao"
 	"appointed-registration/global"
+	"appointed-registration/helper/helper"
+	"appointed-registration/models/hospital"
 	allhospital "appointed-registration/server/allHospital"
 	listdepartment "appointed-registration/server/listDepartment"
 	"appointed-registration/server/login"
@@ -15,6 +18,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 )
 
 type Server struct {
@@ -109,21 +113,43 @@ func (s *Server) GetLogin(code string) error {
 * 作者:小大白兔
 * 创建时间:2022/10/01 22:44:31
  */
+//  map[code:237 distance:<nil> levelText:二级医院 maintain:false name:北京市昌平区沙河医院 openTimeText:10:15 picture://img.114yygh.com/image/image-003/23177077420475949.png]
 func GetAllHostpital() error {
 
 	for i := 1; ; i++ {
-		dd, err := allhospital.GetAddress(0, "0", i)
+
+		dataStr, err := allhospital.GetAddress(0, "0", i)
 		if err != nil {
 			return errors.New("错误: " + err.Error())
 		}
-		if strings.Contains(dd, "[]") {
+
+		// 查询出所有的结果数据
+		if strings.Contains(dataStr, "[]") {
 			break
 		}
-		fmt.Println(dd)
-		// time.Sleep(2 * time.Second)
+
+		result, err := helper.FormatString(dataStr)
+		if err != nil {
+			global.LogSuger.Errorf("转换失败: " + err.Error())
+			return errors.New("转换失败: " + err.Error())
+		}
+
+		arr := []*hospital.Hospital{}
+		// fmt.Println(v.(map[string]interface{})["code"])
+		// 将获取的到数据存储
+		for _, v := range result {
+			a := &hospital.Hospital{
+				Code:      v.(map[string]interface{})["code"].(string),
+				LevelText: v.(map[string]interface{})["levelText"].(string),
+				Maintain:  v.(map[string]interface{})["maintain"].(bool),
+				Name:      v.(map[string]interface{})["name"].(string),
+			}
+			arr = append(arr, a)
+		}
+		dao.DB.Create(&arr)
+		time.Sleep(3 * time.Second)
 	}
 
-	fmt.Println("显然结束了")
 	return nil
 }
 

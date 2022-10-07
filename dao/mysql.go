@@ -4,6 +4,7 @@ import (
 	"appointed-registration/config"
 	"appointed-registration/global"
 	"appointed-registration/models/address"
+	"appointed-registration/models/hospital"
 	"log"
 
 	"github.com/go-redis/redis/v8"
@@ -37,6 +38,7 @@ func InitMysql() {
 	DB.AutoMigrate(
 		&address.AllAddress{},
 		&address.AllGrade{},
+		&hospital.Hospital{},
 	)
 
 	global.RedisDb = redis.NewClient(&redis.Options{

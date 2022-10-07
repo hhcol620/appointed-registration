@@ -3,7 +3,6 @@ package listaddress
 import (
 	"appointed-registration/dao"
 	"appointed-registration/models/address"
-	"fmt"
 )
 
 // 各个行政去代号
@@ -83,7 +82,7 @@ func InsertAddressAndGrade() {
 		}
 		addressGrade = append(addressGrade, a)
 	}
-	fmt.Println(addressGrade, addresses)
+	// fmt.Println(addressGrade, addresses)
 	dao.DB.Create(&addresses)
 
 	dao.DB.Create(&addressGrade)

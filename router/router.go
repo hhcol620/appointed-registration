@@ -1,7 +1,7 @@
 package router
 
 import (
-	"appointed-registration/app/allhospital"
+	"appointed-registration/app/allhospitalapi"
 	"appointed-registration/app/listdepartment"
 	"appointed-registration/app/login"
 
@@ -20,7 +20,7 @@ func InitUserRouter(Router *gin.RouterGroup) {
 	// 所有的医院
 	allHospitalss := Router.Group("hospital")
 	{
-		allHospitalss.GET("", allhospital.GetAllHostpitals)
+		allHospitalss.GET("", allhospitalapi.GetAllHostpitals)
 	}
 
 	// 一个医院的科室
