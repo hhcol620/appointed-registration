@@ -3,10 +3,8 @@ module appointed-registration
 go 1.17
 
 require (
-	github.com/garyburd/redigo v1.6.4
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/golang/glog v1.0.0
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.509
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ocr v1.0.509
 	go.uber.org/zap v1.23.0

@@ -5,6 +5,7 @@ import (
 	"appointed-registration/global"
 	"appointed-registration/helper/helper"
 	"appointed-registration/models/hospital"
+	registered "appointed-registration/server/Registered"
 	allhospital "appointed-registration/server/allHospital"
 	listdepartment "appointed-registration/server/listDepartment"
 	"appointed-registration/server/login"
@@ -26,9 +27,15 @@ type Server struct {
 	HosCode  listdepartment.HostCode
 }
 
-func NewServers(apiLogin login.Login) *Server {
+func NewServers(mobile, hosCode string) *Server {
 	return &Server{
-		ApiLogin: apiLogin,
+		ApiLogin: login.Login{
+			Mobile: mobile,
+		},
+
+		HosCode: listdepartment.HostCode{
+			HosCode: hosCode,
+		},
 	}
 }
 
@@ -75,15 +82,13 @@ func (s *Server) GetMobileCode(code string) error {
 
 	err := s.ApiLogin.CheckCode(code)
 	if err != nil {
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
-		log.Println("验证图片验证码失败: ", err)
+		global.LogSuger.Errorf("获取数据失败: " + err.Error())
 		return err
 	}
 
 	err = s.ApiLogin.VerfiyCode(code)
 	if err != nil {
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
-		log.Println("验证图片验证码失败: ", err)
+		global.LogSuger.Errorf("获取手机验证码失败")
 		return err
 	}
 
@@ -181,4 +186,34 @@ func (s *Server) GetDepartment() (map[string]interface{}, error) {
 	}
 
 	return result, nil
+}
+
+/**
+* 代码描述:获取科室的号码数
+* 作者:小大白兔
+* 创建时间:2022/10/09 16:14:11
+ */
+
+func GetRegister(hostCode, firstDeptCode, secondDeptCode string) error {
+	res := registered.RegisterCode{
+		HostCode:       hostCode,
+		FirstDeptCode:  firstDeptCode,
+		SecondDeptCode: secondDeptCode,
+	}
+
+	// 获取响应
+	response, err := res.Check()
+	if err != nil {
+		global.LogSuger.Errorf("获取响应失败")
+		return errors.New("获取响应失败")
+	}
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		global.LogSuger.Errorf("数据解析失败: " + err.Error())
+		return errors.New("数据解析失败: " + err.Error())
+	}
+
+	fmt.Println(string(body))
+	return nil
 }

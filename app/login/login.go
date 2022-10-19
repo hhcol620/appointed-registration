@@ -5,7 +5,6 @@ import (
 	"appointed-registration/global"
 	"appointed-registration/helper/response"
 	v1 "appointed-registration/server"
-	"appointed-registration/server/login"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -26,9 +25,7 @@ func GetImgCode(ctx *gin.Context) {
 
 	}
 
-	server := v1.NewServers(login.Login{
-		Mobile: getMobile.Mobile,
-	})
+	server := v1.NewServers(getMobile.Mobile, "")
 
 	global.Phone = getMobile.Mobile
 
@@ -59,9 +56,7 @@ func SendMobileCode(c *gin.Context) {
 
 	}
 
-	server := v1.NewServers(login.Login{
-		Mobile: global.Phone,
-	})
+	server := v1.NewServers("", "")
 
 	if err := server.GetMobileCode(getCode.Code); err != nil {
 		log.SetFlags(log.Lshortfile | log.LstdFlags)
@@ -90,9 +85,7 @@ func Login(c *gin.Context) {
 
 	}
 
-	server := v1.NewServers(login.Login{
-		Mobile: global.Phone,
-	})
+	server := v1.NewServers(global.Phone, "")
 
 	if err := server.GetLogin(getCode.Code); err != nil {
 		log.SetFlags(log.Lshortfile | log.LstdFlags)

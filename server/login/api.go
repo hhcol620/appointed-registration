@@ -54,11 +54,12 @@ func (l *Login) GetImgCode() (*http.Response, error) {
 	}
 
 	// 用于验证码的cookie
-	str := "imed_session=tqBih5MhOSWMKEJVGMkdn2kRV0VyaCzJ_5546196; " +
-		"cmi-user-ticket=7sPtiKINx_YSpROYsjhcaO14sB1WCzIYDhs92g..;" + "secure-key=26de1e26-1dca-47a8-888b-74628415a465; " +
+	str := "imed_session=Kk1HN5sNT39stASvVX81ULU4Yh8IKhdJ_5551087; " +
+		"cmi-user-ticket=w2TVPLg_wSPKa7dqWn8gMFWJ4ZyGQExHmTVQFw..; " + "secure-key=686e6631-c67b-4a02-b2fa-ff4be7f80e87; " +
 		solveSetCookie(response.Header["Set-Cookie"][0]) +
 		solveSetCookie(response.Header["Set-Cookie"][1]) + solveSetCookieS(response.Header["Set-Cookie"][1])
 
+	global.Phone = l.Mobile
 	// 将数据存储到数据库
 	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("checkCode:%v", l.Mobile), str, time.Hour*24*7).Result()
 	if err != nil {
@@ -85,7 +86,7 @@ func (l *Login) CheckCode(code string) error {
 	}
 
 	// 获取需要的cookie
-	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("checkCode:%v", l.Mobile)).Result()
+	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("checkCode:%v", global.Phone)).Result()
 	if err != nil {
 		global.LogSuger.Errorf("获取cookie失败: " + err.Error())
 		return errors.New("获取cookie失败" + err.Error())
@@ -123,7 +124,7 @@ func (l *Login) VerfiyCode(code string) error {
 	global.LogSuger.Info("VerfiyCode 接口请求开始...")
 
 	// 手机号码加密
-	mobileAes := aess.AesMobile(l.Mobile)
+	mobileAes := aess.AesMobile(global.Phone)
 
 	// 替换符号
 	mobileAesSwap := strings.ReplaceAll(mobileAes, "=", "%3D")
@@ -166,7 +167,7 @@ func (l *Login) VerfiyCode(code string) error {
 
 	str := solveSetCookie(response.Header["Set-Cookie"][0]) + "cmi-user-ticket=zwAYVjg8QMKiN0GNRZuSq08nhd5H-rjRwFjqgA..; " + "secure-key=1e4ad55a-020a-4ee9-b8b4-cdc7c520176d; " + solveSetCookie(response.Header["Set-Cookie"][0]) + "agent_login_img_code=e414dd97a7ed47fe8054f4e698d0d031; " + solveSetCookieS(response.Header["Set-Cookie"][1])
 	// 存放
-	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("login:%v", l.Mobile), str, time.Hour*7*24).Result()
+	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("login:%v", global.Phone), str, time.Hour*7*24).Result()
 	if err != nil {
 		global.LogSuger.Errorf("cookie 储存失败: " + err.Error())
 		return errors.New("存放数据失败: " + err.Error())
@@ -174,11 +175,10 @@ func (l *Login) VerfiyCode(code string) error {
 
 	dd, _ := ioutil.ReadAll(response.Body)
 
-	fmt.Println(string(dd))
-
+	// fmt.Println(string(dd))
 	if ok := strings.Contains(string(dd), "endMilliseconds"); !ok {
 		// 证明登录失败
-		global.LogSuger.Errorf("验证码失败")
+		global.LogSuger.Errorf("直接登录失败验证码失败")
 		return errors.New("验证码验证失败")
 	}
 

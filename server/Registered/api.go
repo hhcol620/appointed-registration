@@ -1,47 +1,17 @@
 package registered
 
 import (
+	"appointed-registration/global"
 	v1 "appointed-registration/helper/request"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
 
-func test() {
-	request := v1.GetRequest(fmt.Sprintf("https://www.114yygh.com/web/hospital/authority?_time=%v&hosCode=120", time.Now().UnixMilli()))
-
-	client := &http.Client{}
-	// helper.SetHead(request)
-	request.Header.Set("Accept-Encoding", "gzip, deflate, br")
-	request.Header.Set("Accept", "application/json, text/plain, */*")
-	request.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
-	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
-	request.Header.Set("Cookie", "imed_session=y93DYH6MMN5gEfTDeJ9O7eoAbODDAj6p_5545804; imed_session=ixxz3gaf2v72HOnXtoF4Gt8BRrrI63iF_5545812; secure-key=cca45fab-7f7e-4cda-b810-3e87fc509f15; imed_session=ixxz3gaf2v72HOnXtoF4Gt8BRrrI63iF_5545812; agent_login_img_code=6a066ac944a2471aba5931f21a0080c0; cmi-user-ticket=_r8I0Vj1tuyfgR1KGp2igo029usSESN0q417zA..; imed_session_tm=1663743776210")
-	request.Header.Set("Host", "www.114yygh.com")
-	request.Header.Set("Referer", "https://www.114yygh.com/hospital/120/a660294efe4daaf0bcbff7d69225ce5b/200000909/source")
-	request.Header.Set("Request-Source", "PC")
-	request.Header.Set("sec-ch-ua", `"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"`)
-	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
-	request.Header.Set("sec-ch-ua-mobile", "?0")
-	request.Header.Set("sec-ch-ua-platform", "Windows")
-	request.Header.Set("Sec-Fetch-Dest", "empty")
-	request.Header.Set("Sec-Fetch-Mode", "cors")
-	request.Header.Set("Sec-Fetch-Site", "same-origin")
-
-	response, err := client.Do(request)
-	if err != nil {
-		log.Println("响应失败: ", err)
-		return
-	}
-	sss, _ := ioutil.ReadAll(response.Body)
-	fmt.Println(string(sss))
-}
-
 // 筛选出需要查询的
-type mou struct {
+type RegisterCode struct {
 	HostCode       string `json:"hosCode"`
 	FirstDeptCode  string `json:"firstDeptCode"`
 	SecondDeptCode string `json:"secondDeptCode"`
@@ -49,29 +19,35 @@ type mou struct {
 }
 
 // 传入医院的所有的数据进行查询
-func Check(hasCode, firstDeptCode, secondDeptCode, cookieStr string) {
+func (r *RegisterCode) Check() (*http.Response, error) {
 	// 通过传入数据医院,
 
-	params := mou{
-		HostCode:       hasCode,
-		FirstDeptCode:  firstDeptCode,
-		SecondDeptCode: secondDeptCode,
+	params := RegisterCode{
+		HostCode:       r.HostCode,
+		FirstDeptCode:  r.FirstDeptCode,
+		SecondDeptCode: r.SecondDeptCode,
 		Week:           1,
 	}
+
 	param, err := json.Marshal(params)
 	if err != nil {
-		fmt.Println("转换失败: ", err)
-		return
+		global.LogSuger.Errorf("数据解析失败: " + err.Error())
+		return nil, errors.New("数据解析失败: " + err.Error())
 	}
-	// fmt.Println(string(param))
-	request := v1.PostRequest(fmt.Sprintf("https://www.114yygh.com/web/product/list?_time=%v", time.Now().UnixMilli()), string(param))
 
-	// request.Header.Add("Content-Type", "application/json")
-	// helper.SetRegisteredHead(request)
+	request := v1.PostRequest(fmt.Sprintf("https://www.114yygh.com/web/product/list?_time=%v", time.Now().UnixMilli()), string(param))
+	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("login:%v", global.Phone)).Result()
+	if err != nil {
+		global.LogSuger.Errorf("存放cookie失败: " + err.Error())
+		return nil, errors.New("存放数据失败: " + err.Error())
+	}
+
+	fmt.Println(cookieStr)
+
+	request.Header.Set("Connection", "keep-alive")
 	request.Header.Set("Accept-Encoding", "gzip, deflate, br")
 	request.Header.Set("Accept", "application/json, text/plain, */*")
 	request.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
-	request.Header.Set("Connection", "keep-alive")
 	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
 	request.Header.Set("Cookie", cookieStr)
 	request.Header.Set("Host", "www.114yygh.com")
@@ -91,10 +67,8 @@ func Check(hasCode, firstDeptCode, secondDeptCode, cookieStr string) {
 
 	response, err := client.Do(request)
 	if err != nil {
-		log.Println("响应错误: ", err)
-		return
+		global.LogSuger.Errorf("响应失败: " + err.Error())
 	}
-	sss, _ := ioutil.ReadAll(response.Body)
-	fmt.Println(string(sss))
-	fmt.Println(response.StatusCode)
+
+	return response, nil
 }
