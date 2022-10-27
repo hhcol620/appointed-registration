@@ -29,7 +29,14 @@
 * 如果有好的想法和建议，请联系作者~~
 * 平台的话可能会陆续补充
 
-![微信](images/WechatIMG2.jpeg)
+
+<center>
+<figure>
+<img src="./images/WechatIMG2.jpeg" width="200px" />
+<img src="./images/WechatIMG4.jpeg" width="200px" />
+</figure>
+</center>
+
 
 
 
