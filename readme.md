@@ -32,8 +32,7 @@
 
 <center>
 <figure>
-<img src="./images/WechatIMG2.jpeg" width="200px" />
-<img src="./images/WechatIMG4.jpeg" width="200px" />
+<img src="./images/WechatIMG2.jpeg" width="200px" /><img src="./images/WechatIMG4.jpeg" width="200px" />
 </figure>
 </center>
 
