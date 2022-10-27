@@ -30,10 +30,8 @@
 * 平台的话可能会陆续补充
 
 
-<center>
-<figure>
+<center class="half">
 <img src="./images/WechatIMG2.jpeg" width="200px" /><img src="./images/WechatIMG4.jpeg" width="200px" />
-</figure>
 </center>
 
 
