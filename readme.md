@@ -22,6 +22,11 @@
     浏览器打开 http://localhost:9000
   2. 平台默认的账号密码 auto-register@163.com
       admin
+      
+      
+ #### 可拓展的地方
+   1. 可配合安卓上的脚本配合使用，每次需要重新登录，发送验证码，通过脚本自动提交到服务，前提条件，项目运行在服务器上或者让自己手机和电脑在同一个网络下
+   2. 脚本参考 https://github.com/snailuncle/autojsDemo/tree/master/%E6%8E%A5%E7%A0%81
 
 
 
