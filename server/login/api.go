@@ -227,16 +227,100 @@ func (l *Login) Login(code string) error {
 		return errors.New("响应失败: " + err.Error())
 	}
 
-	str := solveSetCookie(response.Header["Set-Cookie"][0]) + "cmi-user-ticket=zwAYVjg8QMKiN0GNRZuSq08nhd5H-rjRwFjqgA..; " + "secure-key=1e4ad55a-020a-4ee9-b8b4-cdc7c520176d; " + solveSetCookie(response.Header["Set-Cookie"][0]) + "agent_login_img_code=e414dd97a7ed47fe8054f4e698d0d031; " + solveSetCookieS(response.Header["Set-Cookie"][1])
-
-	// 存放
-	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("register:%v", l.Mobile), str, time.Hour*7*24).Result()
+	// 拼接list cookie 数据
+	arr := strings.Split(cookieStr, ";")
+	str := arr[3] + arr[2] + arr[3] + "arr[4]+cmi-user-ticket=gJ70JcoP6bhDDjO0dWnA3W4cpkDmKoS1sON23w..;" + solveSetCookie(response.Header["Set-Cookie"][1])
+	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("list_time:%v", global.Phone), str, time.Hour*7*24).Result()
 	if err != nil {
 		global.LogSuger.Errorf("存放cookie失败: " + err.Error())
 		return errors.New("存放数据失败: " + err.Error())
 	}
 
+	global.LoginCookie = response.Header["Set-Cookie"][0]
+
 	global.LogSuger.Info("login 接口请求结束...")
+
+	return nil
+}
+
+/**
+* 代码描述: 获取cookie的时间
+* 作者:小大白兔
+* 创建时间:2022/10/24 16:59:57
+ */
+
+func Get_Time() error {
+	global.LogSuger.Info("GetTime 接口请求开始...")
+
+	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("list_time:%v", global.Phone)).Result()
+
+	if err != nil {
+		global.LogSuger.Errorf("获取cookie数据失败: " + err.Error())
+		return errors.New("获取数据失败" + err.Error())
+	}
+
+	// 请求时间数据
+	request := v1.GetRequest(fmt.Sprintf("https://www.114yygh.com/web/user/guide/list?_time=%v", time.Now().UnixMilli()))
+
+	// 设置cookie 参数
+	request.Header.Set("Connection", "keep-alive")
+	request.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	request.Header.Set("Accept", "application/json, text/plain, */*")
+	request.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
+	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	request.Header.Set("Cookie", cookieStr)
+	request.Header.Set("Host", "www.114yygh.com")
+	request.Header.Set("Origin", "https://www.114yygh.com")
+	request.Header.Set("Referer", "https://www.114yygh.com/")
+	request.Header.Set("Request-Source", "PC")
+	request.Header.Set("sec-ch-ua", `"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"`)
+	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
+	request.Header.Set("sec-ch-ua-mobile", "?0")
+	request.Header.Set("sec-ch-ua-platform", "Windows")
+	request.Header.Set("Sec-Fetch-Dest", "empty")
+	request.Header.Set("Sec-Fetch-Mode", "cors")
+	request.Header.Set("Sec-Fetch-Site", "same-origin")
+	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36")
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		global.LogSuger.Errorf("响应失败: " + err.Error())
+		return errors.New("响应失败: " + err.Error())
+	}
+
+	// 组装获取号码的cookie
+	str1, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("checkCode:%v", global.Phone)).Result()
+	if err != nil {
+		global.LogSuger.Errorf("获取cookie失败: " + err.Error())
+		return errors.New("获取数据失败: " + err.Error())
+	}
+
+	fmt.Println("这是时间", response.Header["Set-Cookie"][1])
+	// fmt.Println("这是cookie1: ", str1)
+
+	strArr := strings.Split(str1, ";")
+
+	str2, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("login:%v", global.Phone)).Result()
+	if err != nil {
+		global.LogSuger.Errorf("获取cookie数据失败: " + err.Error())
+		return errors.New("获取数据失败" + err.Error())
+	}
+
+	fmt.Println("这是cookie2: ", str2)
+
+	arr := strings.Split(str2, ";")
+
+	cookie := solveSetCookie(strArr[0]) + solveSetCookie(arr[1]) + solveSetCookie(global.LoginCookie) + solveSetCookie(arr[0]) + solveSetCookie(arr[4]) + solveSetCookie(arr[0]) + solveSetCookieS(response.Header["Set-Cookie"][1])
+
+	_, err = global.RedisDb.Set(global.Ctx, fmt.Sprintf("register:%v", global.Phone), cookie, time.Hour*7*24).Result()
+	if err != nil {
+		global.LogSuger.Errorf("存放cookie失败: " + err.Error())
+		return errors.New("存放数据失败: " + err.Error())
+	}
+
+	global.LogSuger.Info("GetTime 接口请求结束...")
 
 	return nil
 }

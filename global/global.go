@@ -16,4 +16,7 @@ var (
 	Ctx = context.Background()
 	// 手机号码
 	Phone = ""
+
+	// 登录获取的获取的参数
+	LoginCookie = ""
 )

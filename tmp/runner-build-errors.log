@@ -1,0 +1,2 @@
+# appointed-registration/server
+server\api.go:110:6: use of package login without selector

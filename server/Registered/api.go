@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -18,7 +19,11 @@ type RegisterCode struct {
 	Week           int    `json:"week"`
 }
 
-// 传入医院的所有的数据进行查询
+/**
+* 代码描述:号码查询
+* 作者:小大白兔
+* 创建时间:2022/10/24 16:59:42
+ */
 func (r *RegisterCode) Check() (*http.Response, error) {
 	// 通过传入数据医院,
 
@@ -36,20 +41,18 @@ func (r *RegisterCode) Check() (*http.Response, error) {
 	}
 
 	request := v1.PostRequest(fmt.Sprintf("https://www.114yygh.com/web/product/list?_time=%v", time.Now().UnixMilli()), string(param))
-	cookieStr, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("login:%v", global.Phone)).Result()
+
+	strCookie, err := global.RedisDb.Get(global.Ctx, fmt.Sprintf("register:%v", global.Phone)).Result()
 	if err != nil {
-		global.LogSuger.Errorf("存放cookie失败: " + err.Error())
-		return nil, errors.New("存放数据失败: " + err.Error())
+		global.LogSuger.Errorf("获取cookie失败: " + err.Error())
+		return nil, errors.New("获取数据失败: " + err.Error())
 	}
-
-	fmt.Println(cookieStr)
-
 	request.Header.Set("Connection", "keep-alive")
 	request.Header.Set("Accept-Encoding", "gzip, deflate, br")
 	request.Header.Set("Accept", "application/json, text/plain, */*")
 	request.Header.Set("Accept-Language", "zh-CN,zh;q=0.9")
 	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
-	request.Header.Set("Cookie", cookieStr)
+	request.Header.Set("Cookie", strCookie)
 	request.Header.Set("Host", "www.114yygh.com")
 	request.Header.Set("Origin", "https://www.114yygh.com")
 	request.Header.Set("Referer", "https://www.114yygh.com/hospital/146/5072ec36c845e36c95d59606f2451089/200087753/source")
@@ -67,8 +70,20 @@ func (r *RegisterCode) Check() (*http.Response, error) {
 
 	response, err := client.Do(request)
 	if err != nil {
+
 		global.LogSuger.Errorf("响应失败: " + err.Error())
+		return nil, errors.New("响应失败: " + err.Error())
 	}
 
 	return response, nil
+}
+
+func solveSetCookie(cookie string) string {
+	dd := strings.Split(cookie, ";")
+	return dd[0] + "; "
+}
+
+func solveSetCookieS(cookie string) string {
+	dd := strings.Split(cookie, ";")
+	return dd[0]
 }

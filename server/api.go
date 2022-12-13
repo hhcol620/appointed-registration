@@ -104,12 +104,14 @@ func (s *Server) GetLogin(code string) error {
 
 	// 实现登录
 	if err := s.ApiLogin.Login(code); err != nil {
-		log.SetFlags(log.Lshortfile | log.LstdFlags)
-		log.Println("登录失败")
+		global.LogSuger.Errorf("登录失败")
 		return err
-
 	}
-
+	err := login.Get_Time()
+	if err != nil {
+		global.LogSuger.Errorf("获取挂号cookie失败: " + err.Error())
+		return errors.New("获取挂号cookie失败: " + err.Error())
+	}
 	return nil
 }
 
